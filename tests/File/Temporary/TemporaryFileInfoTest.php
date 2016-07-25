@@ -13,7 +13,6 @@ namespace SR\File\Temporary\Tests;
 
 use SR\File\Temporary\TemporaryFileInfo;
 use SR\File\Temporary\TemporaryFileRegistry;
-use SR\Reflection\Inspect;
 
 /**
  * Class TemporaryFileInfoTest.
