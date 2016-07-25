@@ -32,6 +32,7 @@ class TemporaryFileInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(file_exists($file2->getPathname()));
         $this->assertCount(0, TemporaryFileRegistry::getFiles());
     }
+
     public function testRemove()
     {
         $file1 = TemporaryFileInfo::create();
