@@ -20,20 +20,17 @@ use SR\File\FileInfo;
 class TemporaryFileInfo extends FileInfo
 {
     /**
-     * @param string      $file
-     * @param string|null $relativePath
-     * @param string|null $relativePathname
-     * @param bool        $resolvePath
+     * {@inheritdoc}
      */
     public function __construct($file, $relativePath = null, $relativePathname = null, $resolvePath = true)
     {
         parent::__construct($file, $relativePath, $relativePathname, $resolvePath);
 
-        TemporaryFileRegistry::add($this);
+        $this->enableAutomaticDeletion();
     }
 
     /**
-     * @param string      $prefix
+     * @param string $prefix
      *
      * @return static
      */
@@ -45,13 +42,35 @@ class TemporaryFileInfo extends FileInfo
     }
 
     /**
+     * @param bool $enable
+     *
      * @return $this
      */
-    public function persist()
+    public function automaticDeletion($enable = true)
     {
-        TemporaryFileRegistry::remove($this);
+        if ($enable) {
+            TemporaryFileRegistry::add($this);
+        } else {
+            TemporaryFileRegistry::remove($this);
+        }
 
         return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function enableAutomaticDeletion()
+    {
+        return $this->automaticDeletion(true);
+    }
+
+    /**
+     * @return $this
+     */
+    public function disableAutomaticDeletion()
+    {
+        return $this->automaticDeletion(false);
     }
 }
 

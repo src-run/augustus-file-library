@@ -40,7 +40,7 @@ class TemporaryFileInfoTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(2, TemporaryFileRegistry::getFiles());
 
-        $file1->persist();
+        $file1->disableAutomaticDeletion();
         $this->assertCount(1, TemporaryFileRegistry::getFiles());
         $this->assertTrue(file_exists($file1->getPathname()));
         $this->assertTrue(file_exists($file2->getPathname()));
@@ -52,6 +52,23 @@ class TemporaryFileInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(file_exists($file2->getPathname()));
 
         @unlink($file1->getPathname());
+
+        $file1 = TemporaryFileInfo::create();
+        $file2 = TemporaryFileInfo::create();
+
+        $this->assertCount(2, TemporaryFileRegistry::getFiles());
+
+        $file1->disableAutomaticDeletion();
+        $file1->enableAutomaticDeletion();
+        $this->assertCount(2, TemporaryFileRegistry::getFiles());
+        $this->assertTrue(file_exists($file1->getPathname()));
+        $this->assertTrue(file_exists($file2->getPathname()));
+
+        TemporaryFileRegistry::deleteAll();
+
+        $this->assertCount(0, TemporaryFileRegistry::getFiles());
+        $this->assertFalse(file_exists($file1->getPathname()));
+        $this->assertFalse(file_exists($file2->getPathname()));
     }
 }
 
