@@ -42,6 +42,15 @@ class FileInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('SR\File\FileInfo', $file);
         $this->assertSame('/foo/bar/file.ext', $file->getPathname());
     }
+
+    public function testMCATime()
+    {
+        $file = new FileInfo(__FILE__);
+
+        $this->assertInstanceOf('\DateTime', $file->getATime());
+        $this->assertInstanceOf('\DateTime', $file->getMTime());
+        $this->assertInstanceOf('\DateTime', $file->getCTime());
+    }
 }
 
 /* EOF */

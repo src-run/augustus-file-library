@@ -61,6 +61,30 @@ class FileInfo extends SplFileInfo
 
         return sprintf("%.{$precision}f", $this->getSize() / pow(1024, $factor)).@$sizes[(int) $factor];
     }
+
+    /**
+     * @return \DateTime
+     */
+    public function getMTime()
+    {
+        return new \DateTime('@'.parent::getMTime());
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getATime()
+    {
+        return new \DateTime('@'.parent::getATime());
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCTime()
+    {
+        return new \DateTime('@'.parent::getCTime());
+    }
 }
 
 /* EOF */
