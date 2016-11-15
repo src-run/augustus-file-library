@@ -15,7 +15,7 @@ use SR\Spl\File\Exception\NotReadableException;
 use SR\Spl\File\SplFileInfo;
 
 /**
- * Class SplFileInfoTest
+ * Class SplFileInfoTest.
  *
  * @covers \SR\Spl\File\SplFileInfo
  */

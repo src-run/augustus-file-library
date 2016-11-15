@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the `src-run/augustus-file-library` project.
+ * This file is part of the `src-run/augustus-storage-object-library` project.
  *
  * (c) Rob Frawley 2nd <rmf@src.run>
  *
@@ -11,8 +11,8 @@
 
 namespace SR\Spl\File;
 
-use SR\Spl\File\Exception\NotReadableException;
 use SR\Silencer\Call\CallDefinition;
+use SR\Spl\File\Exception\NotReadableException;
 
 /**
  * Class SplFileInfo.
@@ -24,7 +24,7 @@ class SplFileInfo extends \SplFileInfo
      *
      * @return \SplFileInfo
      */
-    static function register(\SplFileInfo $for)
+    public static function register(\SplFileInfo $for)
     {
         $for->setInfoClass(static::class);
 
@@ -73,8 +73,9 @@ class SplFileInfo extends \SplFileInfo
     }
 
     /**
-     * @return string
      * @throws Exception
+     *
+     * @return string
      */
     public function getContents(): string
     {
