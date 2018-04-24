@@ -3,7 +3,7 @@
   "license": "MIT",
   "type": "library",
   "homepage": "https://src.run/augustus-file-library/home",
-  "description": "implementations on top of SplFileInfo that include size helpers and temporary file creation with automatic removal on script completion",
+  "description": "An extended SplFileInfo that includes additional attribute helpers and temporary file auto removal.",
   "support": {
     "email": "rmf@src.run",
     "source": "https://src.run/augustus-file-library/git",
@@ -19,31 +19,33 @@
     }
   ],
   "require": {
-    "php": "~7.0",
-    "ramsey/uuid": "~3.5",
-    "src-run/augustus-exception-library": "~0.7",
-    "src-run/augustus-silencer-library": "~0.7",
-    "symfony/process": "~2.8 || ~3.0"
+    "php": "~7.1",
+    "ramsey/uuid": "~3.7",
+    "src-run/augustus-exception-library": "~0.8,>=0.8.4",
+    "src-run/augustus-silencer-library": "~0.8,>=0.8.1",
+    "symfony/lock": "~3.0 | ~4.0",
+    "symfony/process": "~3.3 | ~4.0"
   },
   "require-dev": {
     "ext-fileinfo": "*",
     "codacy/coverage": "~1.0",
-    "friendsofphp/php-cs-fixer": "v2.0.0-alpha",
-    "phpunit/phpunit": "~5.4",
-    "satooshi/php-coveralls": "~1.0",
-    "sllh/php-cs-fixer-styleci-bridge": "~2.1"
+    "friendsofphp/php-cs-fixer": "~2.0",
+    "mikey179/vfsStream": "~1.6.5",
+    "satooshi/php-coveralls": "~2.0",
+    "symfony/finder": "~4.0",
+    "symfony/phpunit-bridge": "~4.0"
   },
   "suggest": {
-    "ext-fileinfo": "Required for the file info based mime-type resolver."
+    "ext-fileinfo": "Required to use the fileinfo-based mime-type resolver."
   },
   "autoload": {
     "psr-4": {
-      "SR\\Spl\\File\\": "lib"
+      "SR\\File\\": "lib"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "SR\\Spl\\File\\Tests\\": "tests/"
+      "SR\\File\\Tests\\": "tests/"
     }
   },
   "minimum-stability": "dev",
@@ -54,7 +56,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.7-dev"
+      "dev-master": "0.8-dev"
     }
   }
 }

@@ -13,13 +13,9 @@ enabled:
   - php_unit_strict
   - short_array_syntax
 
-disabled:
-  - simplified_null_return
-  - long_array_syntax
-
 finder :
-  name    : [ "*.php", "*.twig" ]
-  exclude : [ "vendor", "var" ]
-  path    : [ "lib", "test" ]
+  name    : [ '*.php' ]
+  exclude : [ 'vendor', 'var' ]
+  path    : [ '.' ]
 
 ...

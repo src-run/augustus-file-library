@@ -9,15 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace SR\Spl\File\Exception;
+namespace SR\File\Exception;
 
-use SR\Exception\Exception;
-
-/**
- * Exception for unreadable storage objects.
- */
-class NotReadableException extends Exception
+class FileNotWritableException extends FileRuntimeException
 {
 }
-
-/* EOF */

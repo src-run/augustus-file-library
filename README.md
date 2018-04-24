@@ -1,9 +1,9 @@
 
 # [src-run] augustus-file-library
 
-|       Travis-CI        |      Codacy Rating      |      Code Coverage      |        Style-CI         |
-|:----------------------:|:-----------------------:|:-----------------------:|:-----------------------:|
-| [![Travis](https://src.run/augustus-file-library/travis.svg)](https://src.run/augustus-file-library/travis) | [![Codacy](https://src.run/augustus-file-library/codacy.svg)](https://src.run/augustus-file-library/codacy) | [![Coveralls](https://src.run/augustus-file-library/coveralls.svg)](https://src.run/augustus-file-library/coveralls) | [![Coveralls](https://src.run/augustus-file-library/styleci.svg)](https://src.run/augustus-file-library/styleci) |
+|       Travis-CI        |      Codacy Rating      |      Code Coverage      |        Style-CI         |         Release         |    API Documentation    |
+|:----------------------:|:-----------------------:|:-----------------------:|:-----------------------:|:-----------------------:|:-----------------------:|
+| [![Travis](https://src.run/augustus-file-library/travis.svg)](https://src.run/augustus-file-library/travis) | [![Codacy](https://src.run/augustus-file-library/codacy.svg)](https://src.run/augustus-file-library/codacy) | [![Coveralls](https://src.run/augustus-file-library/coveralls.svg)](https://src.run/augustus-file-library/coveralls) | [![Coveralls](https://src.run/augustus-file-library/styleci.svg)](https://src.run/augustus-file-library/styleci) | [![Packagist](https://src.run/augustus-file-library/packagist.svg)](https://src.run/augustus-file-library/packagist) | [![API Docs](https://src.run/augustus-file-library/api.svg)](https://src.run/augustus-file-library/api) | 
 
 
 ## Overview
@@ -11,7 +11,7 @@
 [Welcome](https://src.run/go/readme_welcome)!
 The `src-run/augustus-file-library` package provides the following
 
-> implementations on top of SplFileInfo that includes size helpers and temp files with automatic removal on script completion
+> An extended SplFileInfo that includes additional attribute helpers and temporary file auto removal.
 
 ### Grouping
 
@@ -116,5 +116,4 @@ information.
 | __Stable Release__ | [![Packagist](https://src.run/augustus-file-library/packagist.svg)](https://src.run/augustus-file-library/packagist)     |
 | __Dev Release__    | [![Packagist](https://src.run/augustus-file-library/packagist_pre.svg)](https://src.run/augustus-file-library/packagist) |
 | __License__        | [![License](https://src.run/augustus-file-library/license.svg)](https://src.run/augustus-file-library/license)           |
-| __Reference__      | [![License](https://src.run/augustus-file-library/api.svg)](https://src.run/augustus-file-library/api)                   |
 
