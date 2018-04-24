@@ -83,16 +83,6 @@ class ExtensionGuesserTest extends TestCase
         foreach ($finder->files() as $file) {
             yield [new FilePath($file, $guesser->guess(new FilePath($file))), $extNorm(pathinfo($file, PATHINFO_EXTENSION)), pathinfo($file, PATHINFO_EXTENSION)];
         }
-
-        $finder = new Finder();
-        $finder
-            ->in(realpath(sprintf('%s/../../../../vendor', __DIR__)))
-            ->size('> 1K')
-            ->name('*.xml');
-
-        foreach ($finder->files() as $file) {
-            yield [new FilePath($file, $guesser->guess(new FilePath($file))), $extNorm('xml'), pathinfo($file, PATHINFO_EXTENSION)];
-        }
     }
 
     /**

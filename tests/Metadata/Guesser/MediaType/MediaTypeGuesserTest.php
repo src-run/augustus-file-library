@@ -72,16 +72,6 @@ class MediaTypeGuesserTest extends AbstractFileTest
         foreach ($finder->files() as $file) {
             yield [FilePath::create($file), 'text/plain'];
         }
-
-        $finder = new Finder();
-        $finder
-            ->in(realpath(sprintf('%s/../../../../vendor', __DIR__)))
-            ->size('> 1K')
-            ->name('*.xml');
-
-        foreach ($finder->files() as $file) {
-            yield [FilePath::create($file), 'text/xml'];
-        }
     }
 
     /**
