@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -26,9 +26,6 @@ class FileBlobTest extends AbstractFileTest
         $this->assertInstanceOf(FileInterface::class, new FileBlob());
     }
 
-    /**
-     * @return \Iterator
-     */
     public static function provideBlobData(): \Iterator
     {
         foreach (self::getRandomContentData() as $citation => $string) {
@@ -38,15 +35,13 @@ class FileBlobTest extends AbstractFileTest
 
     /**
      * @dataProvider provideBlobData
-     *
-     * @param string $string
      */
     public function testGettersAndSetters(string $string)
     {
         $lines = explode(PHP_EOL, $string);
         $count = count($lines);
         $file = FileBlob::create($content = $string, 'image/jpeg', 'jpg');
-        $time = new \DateTime('@'.time());
+        $time = new \DateTime('@' . time());
 
         $this->checkFileTimeMethods($file, $time);
 
@@ -98,7 +93,7 @@ class FileBlobTest extends AbstractFileTest
 
         $copy = FileBlob::create($file->getBlob());
         $this->assertSame($file->getUuid()->toString(), $copy->getUuid()->toString());
-        $alt = FileBlob::create($file->getBlob().'alt');
+        $alt = FileBlob::create($file->getBlob() . 'alt');
         $this->assertNotSame($file->getUuid()->toString(), $alt->getUuid()->toString());
 
         $file->setBlob('foobar');

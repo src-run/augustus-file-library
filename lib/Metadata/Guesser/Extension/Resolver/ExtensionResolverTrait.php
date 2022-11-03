@@ -1,30 +1,25 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) Fabien Potencier <fabien@symfony.com>
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
- * For the full copyright and license information, please view the LICENSE
+ * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
  */
 
 namespace SR\File\Metadata\Guesser\Extension\Resolver;
 
 use SR\File\FileInterface;
-use SR\File\FilePathInterface;
 use SR\File\FilePathCastTrait;
+use SR\File\FilePathInterface;
 use SR\File\Metadata\ExtensionMetadata;
 
 trait ExtensionResolverTrait
 {
     use FilePathCastTrait;
 
-    /**
-     * @param FileInterface $file
-     *
-     * @return null|ExtensionMetadata
-     */
     public function resolve(FileInterface $file): ?ExtensionMetadata
     {
         if (
@@ -38,10 +33,5 @@ trait ExtensionResolverTrait
         return null;
     }
 
-    /**
-     * @param FilePathInterface $file
-     *
-     * @return null|string
-     */
-    abstract protected function doResolveFile(FilePathInterface $file): ?string;
+    abstract protected function doResolveFile(FilePathInterface $file);
 }

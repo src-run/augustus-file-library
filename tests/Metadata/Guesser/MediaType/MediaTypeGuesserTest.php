@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -16,12 +16,12 @@ use SR\File\Exception\FileNotReadableException;
 use SR\File\FileBlob;
 use SR\File\FileInterface;
 use SR\File\FilePath;
+use SR\File\FilePathInterface;
 use SR\File\Metadata\Guesser\MediaType\MediaTypeGuesser;
 use SR\File\Metadata\Guesser\MediaType\Resolver\FileBinaryMediaTypeResolver;
 use SR\File\Metadata\Guesser\MediaType\Resolver\FileinfoMediaTypeResolver;
 use SR\File\Metadata\Guesser\MediaType\Resolver\MediaTypeResolverInterface;
 use SR\File\Metadata\Guesser\MediaType\Resolver\MediaTypeResolverTrait;
-use SR\File\Metadata\MediaTypeMetadata;
 use SR\File\Tests\AbstractFileTest;
 use Symfony\Component\Finder\Finder;
 
@@ -34,14 +34,14 @@ use Symfony\Component\Finder\Finder;
  */
 class MediaTypeGuesserTest extends AbstractFileTest
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
         MediaTypeGuesser::setInstance();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -54,7 +54,8 @@ class MediaTypeGuesserTest extends AbstractFileTest
         $finder
             ->in(realpath(sprintf('%s/../../../../lib', __DIR__)))
             ->size('> 1K')
-            ->name('*.php');
+            ->name('*.php')
+        ;
 
         foreach ($finder->files() as $file) {
             yield [FilePath::create($file), 'text/x-php'];
@@ -67,18 +68,26 @@ class MediaTypeGuesserTest extends AbstractFileTest
             ->name('*.txt')
             ->name('*.yaml')
             ->name('*.yml')
-            ->name('*.json');
+        ;
 
         foreach ($finder->files() as $file) {
             yield [FilePath::create($file), 'text/plain'];
+        }
+
+        $finder = new Finder();
+        $finder
+            ->in(realpath(sprintf('%s/../../../../vendor', __DIR__)))
+            ->size('> 1K')
+            ->name('*.json')
+        ;
+
+        foreach ($finder->files() as $file) {
+            yield [FilePath::create($file), 'application/json'];
         }
     }
 
     /**
      * @dataProvider provideFileData
-     *
-     * @param FilePath $file
-     * @param string   $mediaType
      */
     public function testGuess(FilePath $file, string $mediaType)
     {
@@ -89,9 +98,6 @@ class MediaTypeGuesserTest extends AbstractFileTest
 
     /**
      * @dataProvider provideFileData
-     *
-     * @param FilePath $file
-     * @param string   $mediaType
      */
     public function testGuessWithFileBinaryResolver(FilePath $file, string $mediaType)
     {
@@ -103,9 +109,6 @@ class MediaTypeGuesserTest extends AbstractFileTest
 
     /**
      * @dataProvider provideFileData
-     *
-     * @param FilePath $file
-     * @param string   $mediaType
      */
     public function testGuessWithFileInfoResolver(FilePath $file, string $mediaType)
     {
@@ -117,8 +120,6 @@ class MediaTypeGuesserTest extends AbstractFileTest
 
     /**
      * @dataProvider provideFileData
-     *
-     * @param FilePath $file
      */
     public function testGuessWithNotSupportedResolver(FilePath $file)
     {
@@ -168,12 +169,6 @@ class MediaTypeGuesserTest extends AbstractFileTest
         $this->assertGuesserFunctions($guesser, $file, 'text/plain');
     }
 
-    /**
-     * @param MediaTypeGuesser $guesser
-     * @param FileInterface    $file
-     * @param string           $mediaType
-     * @param array|null       $resolvers
-     */
     private function assertGuesserFunctions(MediaTypeGuesser $guesser, FileInterface $file, string $mediaType, array $resolvers = null): void
     {
         if (null !== $resolvers) {
@@ -184,7 +179,7 @@ class MediaTypeGuesserTest extends AbstractFileTest
         }
 
         $this->assertCount(null === $resolvers ? 2 : count($resolvers), $guesser->getResolvers());
-        $this->assertSame($mediaType, $guesser->guess($file)->stringify());
+        $this->assertSame($mediaType, $guesser->guess($file)?->stringify());
 
         $this->assertSame($guesser, MediaTypeGuesser::getInstance());
 
@@ -199,8 +194,7 @@ class MediaTypeGuesserTest extends AbstractFileTest
 
     private function createNotSupportedResolver(): MediaTypeResolverInterface
     {
-        return new class() implements MediaTypeResolverInterface
-        {
+        return new class() implements MediaTypeResolverInterface {
             use MediaTypeResolverTrait;
 
             /**
@@ -211,10 +205,7 @@ class MediaTypeGuesserTest extends AbstractFileTest
                 return false;
             }
 
-            /**
-             * @return null|MediaTypeMetadata
-             */
-            public function doResolveFile(): ?MediaTypeMetadata
+            public function doResolveFile(FilePathInterface $file): ?string
             {
                 return null;
             }

@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -27,10 +27,6 @@ final class FileTemp extends AbstractFilePath implements FilePathInterface
      */
     private $root;
 
-    /**
-     * @param string|null $name
-     * @param string|null $root
-     */
     public function __construct(string $name = null, string $root = null)
     {
         parent::__construct();
@@ -47,13 +43,6 @@ final class FileTemp extends AbstractFilePath implements FilePathInterface
         $this->release();
     }
 
-    /**
-     * @param string|null $name
-     * @param string|null $root
-     * @param string|null $contents
-     *
-     * @return self
-     */
     public static function create(string $name = null, string $root = null, string $contents = null): self
     {
         $temporary = new self($name, $root);
@@ -65,19 +54,11 @@ final class FileTemp extends AbstractFilePath implements FilePathInterface
         return $temporary;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string|null $name
-     *
-     * @return self
-     */
     public function setName(string $name = null): self
     {
         $this->requireReleasedState('failed to change context descriptor');
@@ -86,19 +67,11 @@ final class FileTemp extends AbstractFilePath implements FilePathInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getRoot(): string
     {
         return $this->root;
     }
 
-    /**
-     * @param string|null $path
-     *
-     * @return FileTemp
-     */
     public function setRoot(string $path = null): self
     {
         $this->requireReleasedState('failed to change path prefix');
@@ -107,17 +80,11 @@ final class FileTemp extends AbstractFilePath implements FilePathInterface
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isAcquired(): bool
     {
         return $this->hasFile();
     }
 
-    /**
-     * @return self
-     */
     public function acquire(): self
     {
         $this->requireReleasedState('failed to acquire a new one');
@@ -127,19 +94,12 @@ final class FileTemp extends AbstractFilePath implements FilePathInterface
                 return new \SplFileInfo($file);
             }
 
-            throw new FileOperationException(
-                'Failed to acquire temporary file in "%s": %s.', $this->getRoot(), Interpreter::error()->text()
-            );
+            throw new FileOperationException('Failed to acquire temporary file in "%s": %s.', $this->getRoot(), Interpreter::error()->text());
         });
 
         return $this;
     }
 
-    /**
-     * @param bool $remove
-     *
-     * @return self
-     */
     public function release(bool $remove = true): self
     {
         if (!$this->isAcquired()) {
@@ -155,10 +115,6 @@ final class FileTemp extends AbstractFilePath implements FilePathInterface
         return $this;
     }
 
-    /**
-     * @param string $string
-     * @param bool   $append
-     */
     protected function doDumpBlob(string $string, bool $append): void
     {
         if (!$this->isAcquired()) {
@@ -168,9 +124,6 @@ final class FileTemp extends AbstractFilePath implements FilePathInterface
         parent::doDumpBlob($string, $append);
     }
 
-    /**
-     * @param string $message
-     */
     private function requireReleasedState(string $message): void
     {
         if ($this->isAcquired()) {

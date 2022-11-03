@@ -1,11 +1,11 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) Fabien Potencier <fabien@symfony.com>
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
- * For the full copyright and license information, please view the LICENSE
+ * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
  */
 
@@ -38,17 +38,12 @@ class FileinfoMediaTypeResolver implements MediaTypeResolverInterface
     public static function isSupported()
     {
         return EngineQuery::extensionLoaded('fileinfo')
-            && class_exists(\FInfo::class);
+            && class_exists(\finfo::class);
     }
 
-    /**
-     * @param FilePathInterface $file
-     *
-     * @return null|string
-     */
     protected function doResolveFile(FilePathInterface $file): ?string
     {
-        $info = new \FInfo(
+        $info = new \finfo(
             FILEINFO_MIME_TYPE, $this->magic->isFileReadable() ? $this->magic->getFile()->getPathname() : null
         );
 

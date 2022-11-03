@@ -1,11 +1,11 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) Fabien Potencier <fabien@symfony.com>
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
- * For the full copyright and license information, please view the LICENSE
+ * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
  */
 
@@ -19,14 +19,11 @@ class FileBinaryMediaTypeResolver implements MediaTypeResolverInterface
     use MediaTypeResolverTrait;
 
     /**
-     * @var string
+     * @var string[]
      */
-    private $command;
+    private array $command;
 
-    /**
-     * @param string $command
-     */
-    public function __construct(string $command = 'file -b --mime %s 2> /dev/null')
+    public function __construct(array $command = ['file', '-b', '--mime'])
     {
         $this->command = $command;
     }
@@ -39,14 +36,9 @@ class FileBinaryMediaTypeResolver implements MediaTypeResolverInterface
         return '\\' !== DIRECTORY_SEPARATOR && class_exists(Process::class);
     }
 
-    /**
-     * @param FilePathInterface $file
-     *
-     * @return null|string
-     */
     protected function doResolveFile(FilePathInterface $file): ?string
     {
-        $process = new Process(sprintf($this->command, escapeshellarg($file->getFile()->getPathname())));
+        $process = new Process([...$this->command, $file->getFile()->getPathname()]);
         $process->setTimeout(5);
         $process->run();
 

@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -13,9 +13,9 @@ namespace SR\File\Tests\Metadata\Guesser\Extension;
 
 use PHPUnit\Framework\TestCase;
 use SR\File\FilePath;
+use SR\File\FilePathInterface;
 use SR\File\Metadata\Guesser\Extension\ExtensionGuesser;
 use SR\File\Metadata\Guesser\Extension\Resolver\ExtensionResolverInterface;
-use SR\File\Metadata\ExtensionMetadata;
 use SR\File\Metadata\Guesser\Extension\Resolver\ExtensionResolverTrait;
 use SR\File\Metadata\Guesser\Extension\Resolver\FileNameExtensionResolver;
 use SR\File\Metadata\Guesser\Extension\Resolver\MediaTypeExtensionResolver;
@@ -31,7 +31,7 @@ use Symfony\Component\Finder\Finder;
  */
 class ExtensionGuesserTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -39,7 +39,7 @@ class ExtensionGuesserTest extends TestCase
         MediaTypeGuesser::setInstance();
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -53,7 +53,8 @@ class ExtensionGuesserTest extends TestCase
         $extNorm = function ($extension) {
             switch ($extension) {
                 case 'php':
-                case 'xml';
+                case 'xml':
+                case 'json':
                     return $extension;
 
                 default:
@@ -65,7 +66,8 @@ class ExtensionGuesserTest extends TestCase
         $finder
             ->in(realpath(sprintf('%s/../../../../lib', __DIR__)))
             ->size('> 1K')
-            ->name('*.php');
+            ->name('*.php')
+        ;
 
         foreach ($finder->files() as $file) {
             yield [new FilePath($file, $guesser->guess(new FilePath($file))), $extNorm('php'), pathinfo($file, PATHINFO_EXTENSION)];
@@ -78,7 +80,8 @@ class ExtensionGuesserTest extends TestCase
             ->name('*.txt')
             ->name('*.yaml')
             ->name('*.yml')
-            ->name('*.json');
+            ->name('*.json')
+        ;
 
         foreach ($finder->files() as $file) {
             yield [new FilePath($file, $guesser->guess(new FilePath($file))), $extNorm(pathinfo($file, PATHINFO_EXTENSION)), pathinfo($file, PATHINFO_EXTENSION)];
@@ -87,9 +90,6 @@ class ExtensionGuesserTest extends TestCase
 
     /**
      * @dataProvider provideFileData
-     *
-     * @param FilePath $file
-     * @param string   $extension
      */
     public function testGuess(FilePath $file, string $extension)
     {
@@ -100,9 +100,6 @@ class ExtensionGuesserTest extends TestCase
 
     /**
      * @dataProvider provideFileData
-     *
-     * @param FilePath $file
-     * @param string   $extension
      */
     public function testGuessWithFileNameResolver(FilePath $file, string $extensionNorm, string $extension)
     {
@@ -114,9 +111,6 @@ class ExtensionGuesserTest extends TestCase
 
     /**
      * @dataProvider provideFileData
-     *
-     * @param FilePath $file
-     * @param string   $extension
      */
     public function testGuessWithMediaTypeResolver(FilePath $file, string $extension)
     {
@@ -128,8 +122,6 @@ class ExtensionGuesserTest extends TestCase
 
     /**
      * @dataProvider provideFileData
-     *
-     * @param FilePath $file
      */
     public function testGuessWithNotSupportedResolver(FilePath $file)
     {
@@ -142,12 +134,6 @@ class ExtensionGuesserTest extends TestCase
         $this->assertNull($guesser->guess($file));
     }
 
-    /**
-     * @param ExtensionGuesser $guesser
-     * @param FilePath         $file
-     * @param string           $extension
-     * @param array|null       $resolvers
-     */
     private function assertGuesserFunctions(ExtensionGuesser $guesser, FilePath $file, string $extension, array $resolvers = null): void
     {
         if (null !== $resolvers) {
@@ -173,8 +159,7 @@ class ExtensionGuesserTest extends TestCase
 
     private function createNotSupportedResolver(): ExtensionResolverInterface
     {
-        return new class() implements ExtensionResolverInterface
-        {
+        return new class() implements ExtensionResolverInterface {
             use ExtensionResolverTrait;
 
             /**
@@ -185,10 +170,7 @@ class ExtensionGuesserTest extends TestCase
                 return false;
             }
 
-            /**
-             * @return null|ExtensionMetadata
-             */
-            public function doResolveFile(): ?ExtensionMetadata
+            public function doResolveFile(FilePathInterface $file)
             {
                 return null;
             }

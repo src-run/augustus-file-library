@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -16,17 +16,11 @@ namespace SR\File;
  */
 abstract class AbstractFileBlob extends AbstractFile
 {
-    /**
-     * @return bool
-     */
     public function hasFile(): bool
     {
         return false;
     }
 
-    /**
-     * @return null|\SplFileInfo
-     */
     public function getFile(): ?\SplFileInfo
     {
         return null;

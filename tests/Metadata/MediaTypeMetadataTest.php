@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -34,13 +34,6 @@ class MediaTypeMetadataTest extends TestCase
 
     /**
      * @dataProvider provideContentTypeData
-     *
-     * @param string      $provided
-     * @param string      $type
-     * @param string      $subType
-     * @param string|null $prefix
-     * @param string|null $suffix
-     * @param string|null $prefixDeliminator
      */
     public function testContentTypes(string $provided, string $type, string $subType, string $prefix = null, string $suffix = null, string $prefixDeliminator = null)
     {
@@ -107,8 +100,6 @@ class MediaTypeMetadataTest extends TestCase
 
     /**
      * @dataProvider provideInvalidContentTypeData
-     *
-     * @param string|null $provided
      */
     public function testInvalidContentTypes(string $provided = null)
     {
@@ -140,9 +131,6 @@ class MediaTypeMetadataTest extends TestCase
 
     /**
      * @dataProvider provideVendorTypeData
-     *
-     * @param string      $provided
-     * @param string|null $vendor
      */
     public function testVendorTypes(string $provided, string $vendor = null)
     {
@@ -187,12 +175,6 @@ class MediaTypeMetadataTest extends TestCase
 
     /**
      * @dataProvider provideEquivalenceData
-     *
-     * @param string|null $provided
-     * @param string      $type
-     * @param string      $subType
-     * @param string|null $prefix
-     * @param string|null $suffix
      */
     public function testIsEquivalent(string $provided = null, string $type, string $subType, string $prefix = null, string $suffix = null)
     {
@@ -215,9 +197,6 @@ class MediaTypeMetadataTest extends TestCase
         $this->assertEmpty(MediaTypeMetadata::create()->stringify());
     }
 
-    /**
-     * @return \Iterator
-     */
     public function provideThrowsOnInvalidMimeTypesData(): \Iterator
     {
         yield ['foo$'];
@@ -229,17 +208,11 @@ class MediaTypeMetadataTest extends TestCase
 
     /**
      * @dataProvider provideThrowsOnInvalidMimeTypesData
-     *
-     * @param string      $type
-     * @param string|null $subType
-     * @param string|null $prefix
-     * @param string|null $suffix
-     * @param string|null $deliminator
      */
     public function testThrowsOnInvalidMimeTypes(string $type, string $subType = null, string $prefix = null, string $suffix = null, string $deliminator = null)
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageRegExp('{Invalid (mime type )?(prefix|deliminator|character\(s\)) "[^"]+" provided (in "[^"]+" )?\(accepted values are ".+"\)\.}');
+        $this->expectExceptionMessageMatches('{Invalid (mime type )?(prefix|deliminator|character\(s\)) "[^"]+" provided (in "[^"]+" )?\(accepted values are ".+"\)\.}');
 
         new MediaTypeMetadata($type, $subType, $prefix, $suffix, $deliminator);
     }
@@ -254,17 +227,12 @@ class MediaTypeMetadataTest extends TestCase
 
     /**
      * @dataProvider provideNonParsableData
-     *
-     * @param string $provided
      */
     public function testNonParable(string $provided)
     {
         $this->assertFalse(MediaTypeMetadata::isParsable($provided));
     }
 
-    /**
-     * @return \Iterator
-     */
     public static function fetchFixtureData(): \Iterator
     {
         return (new DataLoader())(__CLASS__, 30);

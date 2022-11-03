@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -21,9 +21,6 @@ use SR\File\Tests\Fixture\Data\DataLoader;
  */
 class ExtensionMetadataTest extends TestCase
 {
-    /**
-     * @return \Iterator
-     */
     public function provideExtensionsData(): \Iterator
     {
         return self::fetchFixtureData();
@@ -31,8 +28,6 @@ class ExtensionMetadataTest extends TestCase
 
     /**
      * @dataProvider provideExtensionsData
-     *
-     * @param string $provided
      */
     public function testExtensions(string $provided)
     {
@@ -47,9 +42,6 @@ class ExtensionMetadataTest extends TestCase
         $this->assertFalse($meta->isMatch('foo-bar-baz'));
     }
 
-    /**
-     * @return \Iterator
-     */
     public static function fetchFixtureData(): \Iterator
     {
         return (new DataLoader())(__CLASS__, 30);

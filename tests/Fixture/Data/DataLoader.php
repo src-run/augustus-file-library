@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -26,20 +26,12 @@ final class DataLoader
      */
     private $dataRootPath;
 
-    /**
-     * @param string|null $dataRootPath
-     */
     public function __construct(string $dataRootPath = null)
     {
         $this->dataRootPath = $dataRootPath ?: __DIR__;
     }
 
     /**
-     * @param string      $testClassName
-     * @param int|null    $limit
-     * @param string|null $context
-     * @param bool        $shuffle
-     *
      * @throws \ReflectionException
      *
      * @return array|\Iterator

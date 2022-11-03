@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -11,13 +11,13 @@
 
 namespace SR\File\Tests;
 
-use SR\File\Exception\FileFailedDumpException;
-use SR\File\FileInterface;
-use SR\File\FilePath;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use org\bovigo\vfs\vfsStreamException;
 use org\bovigo\vfs\vfsStreamFile;
+use SR\File\Exception\FileFailedDumpException;
+use SR\File\FileInterface;
+use SR\File\FilePath;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -40,7 +40,7 @@ class FilePathTest extends AbstractFileTest
     /**
      * Setup our virtual filesystem environment.
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         if (!class_exists(vfsStream::class)) {
             $this->markTestSkipped(sprintf('Requires "%s"', vfsStream::class));
@@ -64,15 +64,13 @@ class FilePathTest extends AbstractFileTest
         $this->assertInstanceOf(FileInterface::class, new FilePath());
     }
 
-    /**
-     * @return \Iterator
-     */
     public static function provideContentsData(): \Iterator
     {
         $finder = (new Finder())
             ->in(__DIR__)
             ->name('*.php')
-            ->ignoreUnreadableDirs(true);
+            ->ignoreUnreadableDirs(true)
+        ;
 
         foreach ($finder->files() as $f) {
             yield [$f];
@@ -81,11 +79,11 @@ class FilePathTest extends AbstractFileTest
 
     /**
      * @dataProvider provideContentsData
-     *
-     * @param string $contents
      */
-    public function testSettersAndAccesses(string $contents)
+    public function testSettersAndAccesses(mixed $contents)
     {
+        $contents = (string) $contents;
+
         $path = $this->createFakeFileName(__METHOD__, $this->filesystemWork->url());
         $file = $this->createFileReference($path, 'type/sub-type', 'ext');
 
@@ -137,7 +135,7 @@ class FilePathTest extends AbstractFileTest
     public function testThrowsIfDumpFails(): void
     {
         $this->expectException(FileFailedDumpException::class);
-        $this->expectExceptionMessageRegExp('{Failed to write contents of "vfs://php-unit/[^/]+/[^\.]+.ext": [^\.]+.}');
+        $this->expectExceptionMessageMatches('{Failed to write contents of "vfs://php-unit/[^/]+/[^\.]+.ext": [^\.]+.}');
 
         $fake = $this->createFakeFile(__FUNCTION__, 'foobar', 0000, vfsStream::getCurrentGroup() + 1, vfsStream::getCurrentGroup() + 1);
         $file = $this->createFileReference($fake);
@@ -149,7 +147,7 @@ class FilePathTest extends AbstractFileTest
     {
         $file = FilePath::create($raw = $this->createFunctionFile('file.ext', 'foo/bar'));
 
-        $this->checkFileTimeMethods($file, new \DateTime('@'.$file->getFile()->getATime()), new \DateTime('@'.$file->getFile()->getCTime()), new \DateTime('@'.$file->getFile()->getMTime()), 0);
+        $this->checkFileTimeMethods($file, new \DateTime('@' . $file->getFile()->getATime()), new \DateTime('@' . $file->getFile()->getCTime()), new \DateTime('@' . $file->getFile()->getMTime()), 0);
 
         $this->assertValidUuid($file->getUuid());
         $this->assertSame($file->getUuid(), $file->getUuid());
@@ -179,10 +177,6 @@ class FilePathTest extends AbstractFileTest
 
     /**
      * @param string|vfsStreamFile $file
-     * @param string|null          $contentType
-     * @param string|null          $extension
-     *
-     * @return FilePath
      */
     private function createFileReference($file, string $contentType = null, string $extension = null): FilePath
     {
@@ -193,16 +187,6 @@ class FilePathTest extends AbstractFileTest
         );
     }
 
-    /**
-     * @param string      $method
-     * @param string|null $contents
-     * @param int|null    $permissions
-     * @param int|null    $u
-     * @param int|null    $g
-     * @param bool        $add
-     *
-     * @return vfsStreamFile
-     */
     private function createFakeFile(string $method, string $contents = null, int $permissions = null, int $u = null, int $g = null, bool $add = true): vfsStreamFile
     {
         $file = new vfsStreamFile(self::createFakeFileName($method), $permissions);
@@ -226,12 +210,6 @@ class FilePathTest extends AbstractFileTest
         return $file;
     }
 
-    /**
-     * @param string      $method
-     * @param string|null $root
-     *
-     * @return string
-     */
     private static function createFakeFileName(string $method, string $root = null): string
     {
         $name = sprintf(
@@ -245,15 +223,10 @@ class FilePathTest extends AbstractFileTest
         return $name;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
     private static function normalizeClassOrMethodName(string $name): string
     {
         return mb_strtolower(ltrim(preg_replace('{[A-Z]([a-z]+)}', '-$0',
-                preg_replace('{^.+\\\}i', '', get_called_class())
+            preg_replace('{^.+\\\}i', '', static::class)
         ), '-'));
     }
 }

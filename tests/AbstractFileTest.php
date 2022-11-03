@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -13,6 +13,7 @@ namespace SR\File\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use SR\File\AbstractFile;
 use SR\File\FileInterface;
 use SR\File\FileTemp;
@@ -38,7 +39,7 @@ abstract class AbstractFileTest extends TestCase
     /**
      * Setup our virtual filesystem environment.
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         if (null === self::$functionRoot) {
             self::$functionRoot = sprintf('%s/augustus-file-library_abstract-file/', sys_get_temp_dir());
@@ -51,7 +52,7 @@ abstract class AbstractFileTest extends TestCase
         $this->functionalPath = $testRoot;
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -59,15 +60,12 @@ abstract class AbstractFileTest extends TestCase
             self::removeDirectoryRecursive($this->functionalPath);
         }
 
-        if (null !== self::$functionRoot && strlen(self::$functionRoot) > strlen(sys_get_temp_dir()) && file_exists(self::$functionRoot)) {
+        if (null !== self::$functionRoot && mb_strlen(self::$functionRoot) > mb_strlen(sys_get_temp_dir()) && file_exists(self::$functionRoot)) {
             self::removeDirectoryRecursive(self::$functionRoot);
         }
     }
 
     /**
-     * @param int  $limit
-     * @param bool $shuffle
-     *
      * @return string[]
      */
     public static function getRandomContentData(int $limit = 40, bool $shuffle = true): array
@@ -281,10 +279,6 @@ abstract class AbstractFileTest extends TestCase
         $this->assertInstanceOf(ExtensionGuesser::class, AbstractFile::getExtensionGuesser());
     }
 
-    /**
-     * @param FileInterface $file
-     * @param string        $blob
-     */
     protected function checkFileSizeMethods(FileInterface $file, string $blob): void
     {
         $temp = new FileTemp();
@@ -299,10 +293,6 @@ abstract class AbstractFileTest extends TestCase
         $this->assertStringMatchesFormat('%s.%d%d%d%d%d%d%d%d%d%d %s', $file->getSizeHuman(10));
     }
 
-    /**
-     * @param FileInterface $file
-     * @param \DateTime     $aTime
-     */
     protected function checkFileTimeMethods(FileInterface $file, \DateTime $aTime, \DateTime $cTime = null, \DateTime $mTime = null, int $maxDifference = 4): void
     {
         if (null === $cTime) {
@@ -332,11 +322,11 @@ abstract class AbstractFileTest extends TestCase
     }
 
     /**
-     * @param string|Uuid $uuid
+     * @param string|UuidInterface $uuid
      */
     protected function assertValidUuid($uuid): void
     {
-        if ($uuid instanceof Uuid) {
+        if ($uuid instanceof UuidInterface) {
             $uuid = $uuid->toString();
         }
 
@@ -344,11 +334,11 @@ abstract class AbstractFileTest extends TestCase
     }
 
     /**
-     * @param string|Uuid $uuid
+     * @param string|UuidInterface $uuid
      */
     protected function assertNilUuid($uuid): void
     {
-        if ($uuid instanceof Uuid) {
+        if ($uuid instanceof UuidInterface) {
             $uuid = $uuid->toString();
         }
 
@@ -356,21 +346,12 @@ abstract class AbstractFileTest extends TestCase
         $this->assertSame(Uuid::NIL, Uuid::fromString($uuid)->toString());
     }
 
-    /**
-     * @param \DateTime $expected
-     * @param \DateTime $provided
-     */
     protected function assertSameDateTime(\DateTime $expected, \DateTime $provided): void
     {
         $this->assertSame($expected->format('U'), $provided->format('U'));
     }
 
-    /**
-     * @param int       $allowedDifference
-     * @param \DateTime $dateTimeOne
-     * @param \DateTime $dateTimeTwo
-     */
-    protected function assertDateTimeWithinDifference(int $allowedDifference = 0, \DateTime $dateTimeOne, \DateTime $dateTimeTwo): void
+    protected function assertDateTimeWithinDifference(int $allowedDifference, \DateTime $dateTimeOne, \DateTime $dateTimeTwo): void
     {
         $one = (int) $dateTimeOne->format('U');
         $two = (int) $dateTimeTwo->format('U');
@@ -383,23 +364,17 @@ abstract class AbstractFileTest extends TestCase
     }
 
     /**
-     * @param string|Uuid $uuid
+     * @param string|UuidInterface $uuid
      */
     protected function assertNotValidUuid($uuid): void
     {
-        if ($uuid instanceof Uuid) {
+        if ($uuid instanceof UuidInterface) {
             $uuid = $uuid->toString();
         }
 
         $this->assertNotSame($uuid, Uuid::fromString($uuid)->toString());
     }
 
-    /**
-     * @param string $path
-     * @param bool   $allowExisting
-     *
-     * @return string
-     */
     protected function createFunctionPath(string $path, int $permissions = 0777, bool $allowExisting = true): string
     {
         $path = sprintf('%s/%s', $this->functionalPath, $path);
@@ -417,13 +392,6 @@ abstract class AbstractFileTest extends TestCase
         return $real;
     }
 
-    /**
-     * @param string      $file
-     * @param string|null $path
-     * @param bool        $allowExisting
-     *
-     * @return string
-     */
     protected function createFunctionFile(string $file, string $path = null, bool $allowExisting = true): string
     {
         $path = sprintf('%s/%s', $this->createFunctionPath($path ?: '/'), $file);
@@ -441,10 +409,6 @@ abstract class AbstractFileTest extends TestCase
         return $real;
     }
 
-    /**
-     * @param string $path
-     * @param int    $permissions
-     */
     protected static function createDirectoryRecursive(string $path, int $permissions = 0777): void
     {
         if (!file_exists($path)) {
@@ -462,9 +426,6 @@ abstract class AbstractFileTest extends TestCase
         }
     }
 
-    /**
-     * @param string $path
-     */
     protected static function createFileRecursive(string $path): void
     {
         if (!file_exists($path)) {
@@ -478,9 +439,6 @@ abstract class AbstractFileTest extends TestCase
         }
     }
 
-    /**
-     * @param string $path
-     */
     protected static function removeDirectoryRecursive(string $path): void
     {
         if (is_dir($path)) {
@@ -496,9 +454,6 @@ abstract class AbstractFileTest extends TestCase
         }
     }
 
-    /**
-     * @param string $file
-     */
     protected static function removeFile(string $file): void
     {
         if (false === @unlink($file)) {

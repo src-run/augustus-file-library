@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the `src-run/augustus-storage-object-library` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
  * (c) Rob Frawley 2nd <rmf@src.run>
  *

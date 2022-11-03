@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -97,25 +97,18 @@ abstract class AbstractFilePath extends AbstractFileBlob
 
     /**
      * @throws FileFailedOustException
-     *
-     * @return self
      */
     public function remove(): self
     {
         LockClosure::blocking($this, function (): void {
             if ($this->isFileExisting() && false === @unlink($this->stringifyFile()) && $this->isFileExisting()) {
-                throw new FileFailedOustException(
-                    'Failed to remove file "%s": %s', $this->file->getPathname(), Interpreter::error()->text()
-                );
+                throw new FileFailedOustException('Failed to remove file "%s": %s', $this->file->getPathname(), Interpreter::error()->text());
             }
         });
 
         return $this;
     }
 
-    /**
-     * @return null|string
-     */
     protected function doReadBlob(): ?string
     {
         if (!$this->hasFile()) {
@@ -132,9 +125,6 @@ abstract class AbstractFilePath extends AbstractFileBlob
     }
 
     /**
-     * @param string $string
-     * @param bool   $append
-     *
      * @throws FileFailedMakeException|FileFailedDumpException
      */
     protected function doDumpBlob(string $string, bool $append): void
@@ -146,18 +136,12 @@ abstract class AbstractFilePath extends AbstractFileBlob
     }
 
     /**
-     * @param string $path
-     *
      * @throws FileFailedMakeException
-     *
-     * @return string
      */
     protected static function makePathIfNotExists(string $path): string
     {
         if (false === is_dir($path) && false === @mkdir($path, 0777, true) && false === is_dir($path)) {
-            throw new FileFailedMakeException(
-                'Failed to create file "%s": %s', $path, Interpreter::error()->text()
-            );
+            throw new FileFailedMakeException('Failed to create file "%s": %s', $path, Interpreter::error()->text());
         }
 
         if (false !== $real = @realpath($path)) {
@@ -167,17 +151,10 @@ abstract class AbstractFilePath extends AbstractFileBlob
         return $path;
     }
 
-    /**
-     * @param string $file
-     * @param string $contents
-     * @param bool   $append
-     */
     private static function dumpContentsForFile(string $file, string $contents, bool $append): void
     {
         if (false === @file_put_contents($file, $contents, $append ? FILE_APPEND : 0)) {
-            throw new FileFailedDumpException(
-                'Failed to write contents of "%s": %s.', $file, Interpreter::error()->text()
-            );
+            throw new FileFailedDumpException('Failed to write contents of "%s": %s.', $file, Interpreter::error()->text());
         }
     }
 }

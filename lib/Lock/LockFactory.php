@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -13,10 +13,10 @@ namespace SR\File\Lock;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Symfony\Component\Lock\Factory;
 use Symfony\Component\Lock\Lock;
+use Symfony\Component\Lock\LockFactory as Factory;
+use Symfony\Component\Lock\PersistingStoreInterface;
 use Symfony\Component\Lock\Store\SemaphoreStore;
-use Symfony\Component\Lock\StoreInterface;
 
 final class LockFactory
 {
@@ -26,7 +26,7 @@ final class LockFactory
     private static $logger;
 
     /**
-     * @var StoreInterface|null
+     * @var PersistingStoreInterface|null
      */
     private static $store;
 
@@ -45,43 +45,28 @@ final class LockFactory
         self::$factory = null;
     }
 
-    /**
-     * @param LoggerInterface|null $logger
-     */
     public static function setLogger(LoggerInterface $logger = null): void
     {
         self::$factory = null;
         self::$logger = $logger;
     }
 
-    /**
-     * @return LoggerInterface
-     */
     public static function getLogger(): LoggerInterface
     {
         return self::$logger = self::$logger ?: new NullLogger();
     }
 
-    /**
-     * @param StoreInterface|null $store
-     */
-    public static function setStore(StoreInterface $store = null): void
+    public static function setStore(PersistingStoreInterface $store = null): void
     {
         self::$factory = null;
         self::$store = $store;
     }
 
-    /**
-     * @return StoreInterface
-     */
-    public static function getStore(): StoreInterface
+    public static function getStore(): PersistingStoreInterface
     {
         return self::$store = self::$store ?: new SemaphoreStore();
     }
 
-    /**
-     * @return Factory
-     */
     public static function getFactory(): Factory
     {
         if (null === self::$factory) {
@@ -94,8 +79,6 @@ final class LockFactory
 
     /**
      * @param mixed $context
-     *
-     * @return null|Lock
      */
     public static function create($context): ?Lock
     {
@@ -104,8 +87,6 @@ final class LockFactory
 
     /**
      * @param mixed $context
-     *
-     * @return null|Lock
      */
     public static function acquire($context): ?Lock
     {
@@ -116,8 +97,6 @@ final class LockFactory
 
     /**
      * @param mixed $context
-     *
-     * @return Lock
      */
     public static function blocking($context): Lock
     {
@@ -128,8 +107,6 @@ final class LockFactory
 
     /**
      * @param mixed $context
-     *
-     * @return string
      */
     private static function stringifyContext($context): string
     {
@@ -138,8 +115,6 @@ final class LockFactory
 
     /**
      * @param object $context
-     *
-     * @return string
      */
     private static function stringifyComplexContext($context): string
     {

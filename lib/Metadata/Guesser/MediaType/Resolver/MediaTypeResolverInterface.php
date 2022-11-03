@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -21,10 +21,5 @@ interface MediaTypeResolverInterface
      */
     public static function isSupported();
 
-    /**
-     * @param FileInterface $file
-     *
-     * @return null|MediaTypeMetadata
-     */
     public function resolve(FileInterface $file): ?MediaTypeMetadata;
 }

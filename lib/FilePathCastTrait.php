@@ -1,11 +1,11 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) Fabien Potencier <fabien@symfony.com>
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
- * For the full copyright and license information, please view the LICENSE
+ * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
  */
 
@@ -19,14 +19,6 @@ use SR\File\Exception\FileNotReadableException;
  */
 trait FilePathCastTrait
 {
-    /**
-     * @param FileInterface $file
-     * @param bool          $checkExists
-     * @param bool          $checkReadable
-     * @param bool          $allowTemporary
-     *
-     * @return null|FilePathInterface
-     */
     protected static function castToFilePath(FileInterface $file, bool $checkExists = true, bool $checkReadable = true, bool $allowTemporary = true): ?FilePathInterface
     {
         if (true === $allowTemporary && $file instanceof FileBlob) {
@@ -42,15 +34,11 @@ trait FilePathCastTrait
         }
 
         if (true === $checkExists && false === $file->isFileExisting()) {
-            throw new FileNotExistingException(
-                'Invalid file "%s" for resolver "%s": file is not existing.', $file->getIdentity(), __CLASS__
-            );
+            throw new FileNotExistingException('Invalid file "%s" for resolver "%s": file is not existing.', $file->getIdentity(), __CLASS__);
         }
 
         if (true === $checkReadable && false === $file->isFileReadable()) {
-            throw new FileNotReadableException(
-                'Invalid file "%s" for resolver "%s": file is not readable.', $file->getIdentity(), __CLASS__
-            );
+            throw new FileNotReadableException('Invalid file "%s" for resolver "%s": file is not readable.', $file->getIdentity(), __CLASS__);
         }
 
         return $file;

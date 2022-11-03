@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -27,14 +27,9 @@ final class FileNameExtensionResolver implements ExtensionResolverInterface
         return true;
     }
 
-    /**
-     * @param FilePathInterface $file
-     *
-     * @return null|ExtensionMetadata
-     */
     public function doResolveFile(FilePathInterface $file): ?ExtensionMetadata
     {
-        return ((!$file instanceof FileTemp) && (null !== $extension = $file->getPathInfo(PATHINFO_EXTENSION)) && (1 === preg_match('{^[a-z0-9-_]+$}i', $extension, $match)))
+        return ((!$file instanceof FileTemp) && (null !== $extension = $file->getPathInfo(PATHINFO_EXTENSION)) && (1 === preg_match('{^[a-z0-9-_]+$}i', $extension ?? '', $match)))
             ? ExtensionMetadata::create($extension)
             : null;
     }

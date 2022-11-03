@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -27,11 +27,8 @@ final class MediaTypeGuesser
     /**
      * @var MediaTypeResolverInterface[]
      */
-    protected $resolvers = [];
+    private $resolvers = [];
 
-    /**
-     * @param MediaTypeResolverInterface ...$resolvers
-     */
     public function __construct(MediaTypeResolverInterface ...$resolvers)
     {
         $this->registerResolvers(...($resolvers ?: array_map(function (string $resolver): MediaTypeResolverInterface {
@@ -64,10 +61,7 @@ final class MediaTypeGuesser
         return self::$instance;
     }
 
-    /**
-     * @param MediaTypeGuesser|null $guesser
-     */
-    public static function setInstance(MediaTypeGuesser $guesser = null): void
+    public static function setInstance(self $guesser = null): void
     {
         self::$instance = $guesser;
     }
@@ -80,11 +74,6 @@ final class MediaTypeGuesser
         return $this->resolvers;
     }
 
-    /**
-     * @param MediaTypeResolverInterface ...$resolvers
-     *
-     * @return self
-     */
     public function registerResolvers(MediaTypeResolverInterface ...$resolvers): self
     {
         array_unshift($this->resolvers, ...$resolvers);
@@ -92,9 +81,6 @@ final class MediaTypeGuesser
         return $this;
     }
 
-    /**
-     * @return self
-     */
     public function resetResolver(): self
     {
         $this->resolvers = [];
@@ -102,11 +88,6 @@ final class MediaTypeGuesser
         return $this;
     }
 
-    /**
-     * @param FileInterface $file
-     *
-     * @return null|MediaTypeMetadata
-     */
     public function guess(FileInterface $file): ?MediaTypeMetadata
     {
         foreach ($this->resolvers as $resolver) {

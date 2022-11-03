@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -11,30 +11,27 @@
 
 namespace SR\File\Tests\Lock;
 
-use SR\File\Lock\LockFactory;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Symfony\Component\Lock\Factory;
+use SR\File\Lock\LockFactory;
 use Symfony\Component\Lock\Lock;
+use Symfony\Component\Lock\LockFactory as Factory;
+use Symfony\Component\Lock\PersistingStoreInterface;
 use Symfony\Component\Lock\Store\SemaphoreStore;
-use Symfony\Component\Lock\StoreInterface;
 
 /**
  * @covers \SR\File\Lock\LockFactory
  */
 class LockFactoryTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         LockFactory::reset();
     }
 
-    /**
-     * @return \Iterator
-     */
     public static function provideContextStringifyData(): \Iterator
     {
         yield ['a-string'];
@@ -46,8 +43,6 @@ class LockFactoryTest extends TestCase
 
     /**
      * @dataProvider provideContextStringifyData
-     *
-     * @param $context
      */
     public function testCreate($context)
     {
@@ -72,8 +67,6 @@ class LockFactoryTest extends TestCase
 
     /**
      * @dataProvider provideContextStringifyData
-     *
-     * @param $context
      */
     public function testAcquire($context)
     {
@@ -100,8 +93,6 @@ class LockFactoryTest extends TestCase
 
     /**
      * @dataProvider provideContextStringifyData
-     *
-     * @param $context
      */
     public function testBlocking($context)
     {
@@ -128,7 +119,7 @@ class LockFactoryTest extends TestCase
         $this->assertNotSame($l, LockFactory::getLogger());
         $this->assertInstanceOf(LoggerInterface::class, LockFactory::getLogger());
         $this->assertNotSame($s, LockFactory::getStore());
-        $this->assertInstanceOf(StoreInterface::class, LockFactory::getStore());
+        $this->assertInstanceOf(PersistingStoreInterface::class, LockFactory::getStore());
         $this->assertInstanceOf(Factory::class, $f = LockFactory::getFactory());
 
         LockFactory::setLogger($l);
@@ -136,7 +127,7 @@ class LockFactoryTest extends TestCase
         $this->assertSame($l, LockFactory::getLogger());
         $this->assertNotSame($f, $f = LockFactory::getFactory());
         $this->assertInstanceOf(LoggerInterface::class, LockFactory::getLogger());
-        $this->assertInstanceOf(StoreInterface::class, LockFactory::getStore());
+        $this->assertInstanceOf(PersistingStoreInterface::class, LockFactory::getStore());
         $this->assertInstanceOf(Factory::class, LockFactory::getFactory());
 
         LockFactory::setStore($s);
@@ -144,14 +135,12 @@ class LockFactoryTest extends TestCase
         $this->assertSame($s, LockFactory::getStore());
         $this->assertNotSame($f, $f = LockFactory::getFactory());
         $this->assertInstanceOf(LoggerInterface::class, LockFactory::getLogger());
-        $this->assertInstanceOf(StoreInterface::class, LockFactory::getStore());
+        $this->assertInstanceOf(PersistingStoreInterface::class, LockFactory::getStore());
         $this->assertInstanceOf(Factory::class, LockFactory::getFactory());
     }
 
     /**
      * @dataProvider provideContextStringifyData
-     *
-     * @param $context
      */
     public function testContextStringify($context): void
     {
@@ -205,17 +194,11 @@ class LockFactoryTest extends TestCase
              */
             private $iterateStringify;
 
-            /**
-             * @param bool $iterateStringify
-             */
             public function __construct(bool $iterateStringify)
             {
                 $this->iterateStringify = $iterateStringify;
             }
 
-            /**
-             * @return string
-             */
             public function __toString(): string
             {
                 return vsprintf('class-string-%s [%s]', [

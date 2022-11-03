@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -14,7 +14,6 @@ namespace SR\File\Tests;
 use SR\File\Exception\FileOperationException;
 use SR\File\FileInterface;
 use SR\File\FileTemp;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \SR\File\AbstractFile
@@ -70,7 +69,7 @@ class FileTempTest extends AbstractFileTest
         $this->assertFalse($temporary->isFileWritable());
         $this->assertFalse($temporary->hasBlob());
         $this->assertNull($temporary->getBlob());
-        $this->assertFileNotExists($file);
+        $this->assertFileDoesNotExist($file);
     }
 
     public function testAutomaticallyAcquiredOnSetContents()
@@ -104,9 +103,6 @@ class FileTempTest extends AbstractFileTest
         $temporary->setRoot('foobar');
     }
 
-    /**
-     * @return \Iterator
-     */
     public static function provideBlobData(): \Iterator
     {
         foreach (self::getRandomContentData(20) as $blob) {
@@ -116,8 +112,6 @@ class FileTempTest extends AbstractFileTest
 
     /**
      * @dataProvider provideBlobData
-     *
-     * @param string $blob
      */
     public function testStaticConstruction(string $blob): void
     {

@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the `liip/LiipImagineBundle` project.
+ * This file is part of the `src-run/augustus-file-library` project.
  *
- * (c) https://github.com/liip/LiipImagineBundle/graphs/contributors
+ * (c) Rob Frawley 2nd <rmf@src.run>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -57,13 +57,6 @@ class MediaTypeMetadata
      */
     private $suffix;
 
-    /**
-     * @param string|null $type
-     * @param string|null $subType
-     * @param string|null $prefix
-     * @param string|null $suffix
-     * @param string|null $deliminator
-     */
     public function __construct(
         string $type = null,
         string $subType = null,
@@ -78,9 +71,6 @@ class MediaTypeMetadata
         $this->deliminator = self::sanitizeDeliminator($deliminator);
     }
 
-    /**
-     * @return string
-     */
     public function stringify(): string
     {
         return $this->hasType() && $this->hasSubType() ? vsprintf('%s/%s%s%s%s', [
@@ -92,111 +82,66 @@ class MediaTypeMetadata
         ]) : '';
     }
 
-    /**
-     * @return null|string
-     */
     public function getType(): ?string
     {
         return $this->type;
     }
 
-    /**
-     * @return bool
-     */
     public function hasType(): bool
     {
         return null !== $this->getType();
     }
 
-    /**
-     * @param string|null $type
-     *
-     * @return bool
-     */
     public function isTypeMatch(string $type = null): bool
     {
         return $this->getType() === $type;
     }
 
-    /**
-     * @return null|string
-     */
     public function getSubType(): ?string
     {
         return $this->subType;
     }
 
-    /**
-     * @return bool
-     */
     public function hasSubType(): bool
     {
         return null !== $this->getSubType();
     }
 
-    /**
-     * @param string|null $subType
-     *
-     * @return bool
-     */
     public function isSubTypeMatch(string $subType = null): bool
     {
         return $this->getSubType() === $subType;
     }
 
-    /**
-     * @return null|string
-     */
     public function getPrefix(): ?string
     {
         return $this->prefix;
     }
 
-    /**
-     * @return bool
-     */
     public function hasPrefix(): bool
     {
         return null !== $this->getPrefix();
     }
 
-    /**
-     * @param string|null $prefix
-     *
-     * @return bool
-     */
     public function isPrefixMatch(string $prefix = null): bool
     {
         return $this->getPrefix() === $prefix;
     }
 
-    /**
-     * @return bool
-     */
     public function isPrefixUnregistered(): bool
     {
         return $this->isPrefixMatch(self::PREFIX_UNREGISTERED);
     }
 
-    /**
-     * @return bool
-     */
     public function isPrefixVendor(): bool
     {
         return $this->isPrefixMatch(self::PREFIX_VENDOR);
     }
 
-    /**
-     * @return bool
-     */
     public function isPrefixPersonal(): bool
     {
         return $this->isPrefixMatch(self::PREFIX_PERSONAL);
     }
 
-    /**
-     * @return bool
-     */
     public function isPrefixStandard(): bool
     {
         return false === $this->isPrefixUnregistered()
@@ -204,66 +149,36 @@ class MediaTypeMetadata
             && false === $this->isPrefixPersonal();
     }
 
-    /**
-     * @return null|string
-     */
     public function getDeliminator(): ?string
     {
         return $this->deliminator;
     }
 
-    /**
-     * @return bool
-     */
     public function hasDeliminator(): bool
     {
         return null !== $this->getDeliminator();
     }
 
-    /**
-     * @param string|null $deliminator
-     *
-     * @return bool
-     */
     public function isDeliminatorMatch(string $deliminator = null): bool
     {
         return $this->getDeliminator() === $deliminator;
     }
 
-    /**
-     * @return null|string
-     */
     public function getSuffix(): ?string
     {
         return $this->suffix;
     }
 
-    /**
-     * @return bool
-     */
     public function hasSuffix(): bool
     {
         return null !== $this->getSuffix();
     }
 
-    /**
-     * @param string|null $suffix
-     *
-     * @return bool
-     */
     public function isSuffixMatch(string $suffix = null): bool
     {
         return $this->getSuffix() === $suffix;
     }
 
-    /**
-     * @param string|null $type
-     * @param string|null $subType
-     * @param string|null $prefix
-     * @param string|null $suffix
-     *
-     * @return bool
-     */
     public function isMatch(string $type = null, string $subType = null, string $prefix = null, string $suffix = null): bool
     {
         return true === $this->isTypeMatch($type ?: $this->getType())
@@ -272,9 +187,6 @@ class MediaTypeMetadata
             && true === $this->isSuffixMatch($suffix ?: $this->getSuffix());
     }
 
-    /**
-     * @return bool
-     */
     public function isValid(): bool
     {
         return true === $this->hasType()
@@ -284,14 +196,12 @@ class MediaTypeMetadata
 
     /**
      * @param string $string
-     *
-     * @return null|array
      */
     public static function explodeParsable(string $string = null): ?array
     {
         $matched = 1 === preg_match(
             '{^(?<type>[^/]+)/((?<prefix>vnd|prs|x)(?<deliminator>\.|\-))?(?<sub_type>[^+]+?)(\+(?<suffix>.+))?$}',
-            $string, $matches
+            $string ?? '', $matches
         );
 
         $section = function (string $index) use ($matches): ?string {
@@ -307,36 +217,21 @@ class MediaTypeMetadata
         ] : null;
     }
 
-    /**
-     * @param string|null $prefix
-     *
-     * @return null|string
-     */
     private static function sanitizePrefix(string $prefix = null): ?string
     {
         if (null === $prefix || in_array($prefix, [self::PREFIX_UNREGISTERED, self::PREFIX_VENDOR, self::PREFIX_PERSONAL], true)) {
             return self::sanitize($prefix);
         }
 
-        throw new InvalidArgumentException(
-            'Invalid mime type prefix "%s" provided (accepted values are "%s", "%s", and "%s").', $prefix,
-            self::PREFIX_UNREGISTERED, self::PREFIX_VENDOR, self::PREFIX_PERSONAL
-        );
+        throw new InvalidArgumentException('Invalid mime type prefix "%s" provided (accepted values are "%s", "%s", and "%s").', $prefix, self::PREFIX_UNREGISTERED, self::PREFIX_VENDOR, self::PREFIX_PERSONAL);
     }
 
-    /**
-     * @param string|null $deliminator
-     *
-     * @return null|string
-     */
     private static function sanitizeDeliminator(string $deliminator = null): ?string
     {
         if (null === $deliminator || in_array($deliminator, ['.', '-'], true)) {
             return self::sanitize($deliminator);
         }
 
-        throw new InvalidArgumentException(
-            'Invalid mime type deliminator "%s" provided (accepted values are "." and "-").', $deliminator
-        );
+        throw new InvalidArgumentException('Invalid mime type deliminator "%s" provided (accepted values are "." and "-").', $deliminator);
     }
 }
